@@ -57,6 +57,5 @@ func main() {
 
 	if err != nil || appendResponse.HTTPStatusCode != 200 {
 		log.Fatalf("%e", err)
-		return
 	}
 }
