@@ -10,14 +10,14 @@ import (
 	"net/http"
 )
 
-const fileId = "1bzZqgCtkbLaWchoro5dnN8Jz7gPceTmGelR0ov97Tjc"
+const fileID = "1bzZqgCtkbLaWchoro5dnN8Jz7gPceTmGelR0ov97Tjc"
 
 func main() {
-	apiHtmlResponse, err := http.Get("https://confluence.hflabs.ru/pages/viewpage.action?pageId=1181220999")
+	apiHTMLResponse, err := http.Get("https://confluence.hflabs.ru/pages/viewpage.action?pageId=1181220999")
 	if err != nil {
 		fmt.Println("Не удалось получить страницу")
 	}
-	content, err := goquery.NewDocumentFromReader(apiHtmlResponse.Body)
+	content, err := goquery.NewDocumentFromReader(apiHTMLResponse.Body)
 	if err != nil {
 		fmt.Println("Не удалось cоздать документ из ответа")
 	}
@@ -39,23 +39,23 @@ func main() {
 	client := getClient()
 	ctx := context.Background()
 	srv, err := sheets.NewService(ctx, option.WithHTTPClient(client))
-
 	if err != nil {
 		log.Fatalf("Не удалось подключиться к API: %v", err)
 	}
+
 	clearRequest := &sheets.ClearValuesRequest{}
-	_, err = srv.Spreadsheets.Values.Clear(fileId, "1", clearRequest).Do()
+	_, err = srv.Spreadsheets.Values.Clear(fileID, "1", clearRequest).Do()
 	if err != nil {
 		log.Fatalf("Не удалось очистить sheet: %v", err)
 	}
+
 	updatedRows := &sheets.ValueRange{
 		Values: parsedValues,
 	}
-
-	appendResponse, err := srv.Spreadsheets.Values.Append(fileId, "1", updatedRows).
+	appendResponse, err := srv.Spreadsheets.Values.Append(fileID, "1", updatedRows).
 		ValueInputOption("USER_ENTERED").InsertDataOption("INSERT_ROWS").Context(ctx).Do()
 
 	if err != nil || appendResponse.HTTPStatusCode != 200 {
-		log.Fatalf("%e", err)
+		log.Fatalf("%v", err)
 	}
 }
